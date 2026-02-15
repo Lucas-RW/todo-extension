@@ -1,0 +1,9 @@
+{
+  "name": "todo-extension",
+  "private": true,
+  "packageManager": "pnpm@8.6.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
