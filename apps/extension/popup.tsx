@@ -1,25 +1,21 @@
-import { useState } from "react"
+import { Settings } from "lucide-react"
+
+import "./style.css"
 
 function IndexPopup() {
-  const [data, setData] = useState("")
-
   return (
-    <div
-      style={{
-        padding: 16
-      }}>
-      <h2>
-        Welcome to your{" "}
-        <a href="https://www.plasmo.com" target="_blank">
-          Plasmo
-        </a>{" "}
-        Extension!
-      </h2>
-      <input onChange={(e) => setData(e.target.value)} value={data} />
-      <a href="https://docs.plasmo.com" target="_blank">
-        View Docs
-      </a>
-    </div>
+    <section className="popup w-[360px] h-[360px] flex flex-col">
+      <section className="header h-[calc(100%/11)] shrink-0 flex items-center justify-end">
+        <div className="px-3">
+          <button className="p-1 rounded hover:opacity-70">
+            <Settings size={16} />
+          </button>
+        </div>
+      </section>
+      <section className="content flex-1">
+        <p>Data from background:</p>
+      </section>
+    </section>
   )
 }
 
