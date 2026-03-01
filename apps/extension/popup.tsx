@@ -1,19 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { Settings } from "lucide-react"
 
+import { useTodos } from "~/hooks/useTodos"
+import type { PopupTodo } from "~/hooks/useTodos"
+
 import "./style.css"
-
-interface PopupTodo {
-  id: string
-  title: string
-  completing: boolean
-}
-
-const MOCK_TODOS: PopupTodo[] = [
-  { id: "1", title: "Review design system tokens", completing: false },
-  { id: "2", title: "Write unit tests for auth module", completing: false },
-  { id: "3", title: "Update README with setup steps", completing: false }
-]
 
 interface TaskRowProps {
   todo: PopupTodo
@@ -71,29 +62,35 @@ function NewTaskRow({ value, onChange, onCommit, inputRef }: NewTaskRowProps) {
 }
 
 export default function IndexPopup() {
-  const [todos, setTodos] = useState<PopupTodo[]>(MOCK_TODOS)
+  const { todos, loading, error, addTodo, completeTodo } = useTodos()
   const [draftTitle, setDraftTitle] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     inputRef.current?.focus()
-  }, [])
+  }, [loading])
 
-  const handleComplete = (id: string) => {
-    setTodos(prev => prev.map(t => (t.id === id ? { ...t, completing: true } : t)))
-    setTimeout(() => {
-      setTodos(prev => prev.filter(t => t.id !== id))
-    }, 300)
-  }
-
-  const handleCommit = () => {
+  const handleCommit = async () => {
     const title = draftTitle.trim()
     if (!title || todos.length >= 10) return
-    setTodos(prev => [
-      ...prev,
-      { id: Date.now().toString(), title, completing: false }
-    ])
     setDraftTitle("")
+    await addTodo({ title })
+  }
+
+  if (loading) {
+    return (
+      <section className="popup w-[360px] h-[360px] flex items-center justify-center">
+        <span className="text-sm text-gray-400">Loading…</span>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="popup w-[360px] h-[360px] flex items-center justify-center">
+        <span className="text-sm text-red-400">{error}</span>
+      </section>
+    )
   }
 
   return (
@@ -107,7 +104,7 @@ export default function IndexPopup() {
       </section>
       <section className="content flex-1 flex flex-col overflow-hidden">
         {todos.map(todo => (
-          <TaskRow key={todo.id} todo={todo} onComplete={handleComplete} />
+          <TaskRow key={todo.id} todo={todo} onComplete={completeTodo} />
         ))}
         {todos.length < 10 && (
           <NewTaskRow
