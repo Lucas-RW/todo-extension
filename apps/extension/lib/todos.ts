@@ -11,7 +11,7 @@ function rowToTodo(row: DbRow): TodoItem {
     completed: row.completed as boolean,
     parentId: (row.parent_id as string | null) ?? undefined,
     order: row.order as number,
-    collapsed: row.collapsed as boolean,
+    collapsed: (row.collapsed as boolean) ?? false,
     createdAt: new Date(row.created_at as string),
     updatedAt: new Date(row.updated_at as string)
   }

@@ -19,7 +19,7 @@ export interface CreateTodoInput {
 export interface UpdateTodoInput {
   title?: string;
   completed?: boolean;
-  parentId?: string;
+  parentId?: string | null;
   order?: number;
   collapsed?: boolean;
 }
